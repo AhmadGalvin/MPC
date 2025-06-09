@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,7 +44,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'role' => UserRole::class,
     ];
 
     /**
@@ -83,18 +81,15 @@ class User extends Authenticatable
     /**
      * Check if the user has a specific role
      *
-     * @param string $role
+     * @param string|array $role
      * @return bool
      */
     public function hasRole($role): bool
     {
-        if ($this->role instanceof UserRole) {
-            if (is_array($role)) {
-                return in_array($this->role->value, $role);
-            }
-            return $this->role->value === $role;
+        if (is_array($role)) {
+            return in_array($this->role, $role);
         }
-        return false;
+        return $this->role === $role;
     }
 
     /**
@@ -104,7 +99,7 @@ class User extends Authenticatable
      */
     public function isClinicAdmin(): bool
     {
-        return $this->hasRole(UserRole::CLINIC_ADMIN->value);
+        return $this->hasRole('clinic_admin');
     }
 
     /**
@@ -114,7 +109,7 @@ class User extends Authenticatable
      */
     public function isDoctor(): bool
     {
-        return $this->hasRole(UserRole::DOCTOR->value);
+        return $this->hasRole('doctor');
     }
 
     /**
@@ -124,7 +119,7 @@ class User extends Authenticatable
      */
     public function isOwner(): bool
     {
-        return $this->hasRole(UserRole::OWNER->value);
+        return $this->hasRole('owner');
     }
 
     /**

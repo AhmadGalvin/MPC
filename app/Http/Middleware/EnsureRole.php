@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Enums\UserRole;
 use Illuminate\Support\Str;
 
 class EnsureRole
@@ -29,7 +28,7 @@ class EnsureRole
             ->values()
             ->toArray();
 
-        $userRole = $request->user()->role->value;
+        $userRole = $request->user()->role;
         
         if (!in_array($userRole, $allowedRoles)) {
             return $this->handleUnauthorized(

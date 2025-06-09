@@ -22,41 +22,17 @@ class AdminController extends Controller
     public function dashboard(Request $request)
     {
         try {
-            // Get clinic with eager loaded relationships
-            $clinic = Auth::user()->ownedClinic()
-                ->with(['doctors', 'products'])
-                ->firstOrFail();
-
-            // Get total unique pets from consultations
-            $totalPets = Pet::whereHas('consultations', function (Builder $query) use ($clinic) {
-                $query->where('clinic_id', $clinic->id);
-            })->count();
-
-            $stats = [
-                'total_pets' => $totalPets,
-                'active_doctors' => $clinic->doctors()->where('is_active', true)->count(),
-                'completed_consultations' => $clinic->consultations()->completed()->count(),
-                'total_products' => $clinic->products()->count(),
-            ];
-
-            // Get products with low stock first
-            $products = $clinic->products()
-                ->select('id', 'name', 'stock', 'price', 'reorder_point')
-                ->orderBy('stock', 'asc')
-                ->get();
-
+            // Get basic statistics
             $data = [
-                'stats' => $stats,
-                'products' => $products,
-                'clinic' => $clinic,
+                'doctors' => User::where('role', 'doctor')->get(),
+                'products' => Product::latest()->take(6)->get(),
+                'pendingConsultations' => Consultation::where('status', 'pending')->count(),
+                'completedToday' => Consultation::whereDate('completed_at', Carbon::today())->count(),
+                'recentActivities' => ClinicUpdate::with('user:id,name')
+                    ->latest()
+                    ->take(10)
+                    ->get()
             ];
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $data
-                ]);
-            }
 
             return view('admin.dashboard', $data);
         } catch (\Exception $e) {

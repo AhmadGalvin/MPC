@@ -20,6 +20,23 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/dashboard';
 
     /**
+     * Get the home path based on user role.
+     */
+    public static function getHomePath(Request $request): string
+    {
+        if (!$request->user()) {
+            return self::HOME;
+        }
+
+        return match($request->user()->role) {
+            'clinic_admin' => '/admin',
+            'owner' => '/owner',
+            'doctor' => '/doctor',
+            default => self::HOME,
+        };
+    }
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void

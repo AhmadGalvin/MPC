@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.owner')
+
+@section('title', 'Add New Pet')
+@section('header', 'Add New Pet')
 
 @section('content')
 <div class="py-12">

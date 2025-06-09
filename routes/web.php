@@ -32,15 +32,23 @@ Route::middleware(['auth'])->group(function () {
 
     // Owner Routes
     Route::middleware(['role:owner'])->name('owner.')->prefix('owner')->group(function () {
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'ownerDashboard'])->name('dashboard');
+        
         // Pet routes
         Route::resource('pets', PetController::class);
         Route::post('pets/{pet}/photo', [PetController::class, 'uploadPhoto'])->name('pets.upload-photo');
         
-        // Consultation routes
-        Route::get('consultations', [ConsultationController::class, 'index'])->name('consultations.index');
-        Route::get('consultations/create', [ConsultationController::class, 'create'])->name('consultations.create');
-        Route::post('consultations', [ConsultationController::class, 'store'])->name('consultations.store');
-        Route::get('consultations/{consultation}', [ConsultationController::class, 'show'])->name('consultations.show');
+        // Consultation/Appointment routes
+        Route::get('appointments', [ConsultationController::class, 'ownerIndex'])->name('appointments.index');
+        Route::get('appointments/create', [ConsultationController::class, 'create'])->name('appointments.create');
+        Route::post('appointments', [ConsultationController::class, 'store'])->name('appointments.store');
+        Route::get('appointments/{consultation}', [ConsultationController::class, 'show'])->name('appointments.show');
+        Route::post('appointments/{consultation}/messages', [ConsultationController::class, 'sendMessage'])->name('appointments.messages.store');
+        
+        // Medical Records
+        Route::get('medical-records', [MedicalRecordController::class, 'ownerIndex'])->name('medical-records');
+        Route::get('medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
     });
 
     // Product routes
@@ -51,9 +59,20 @@ Route::middleware(['auth'])->group(function () {
 
     // Doctor Routes
     Route::middleware(['role:doctor'])->name('doctor.')->prefix('doctor')->group(function () {
-        Route::get('consultations', [ConsultationController::class, 'index'])->name('consultations.index');
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'doctorDashboard'])->name('dashboard');
+        
+        // Consultations
+        Route::get('consultations', [ConsultationController::class, 'doctorIndex'])->name('consultations.index');
         Route::get('consultations/{consultation}', [ConsultationController::class, 'show'])->name('consultations.show');
         Route::put('consultations/{consultation}', [ConsultationController::class, 'update'])->name('consultations.update');
+        Route::post('consultations/{consultation}/complete', [ConsultationController::class, 'complete'])->name('consultations.complete');
+        Route::post('consultations/{consultation}/messages', [ConsultationController::class, 'sendMessage'])->name('consultations.messages.store');
+        
+        // Medical Records
+        Route::get('medical-records', [MedicalRecordController::class, 'doctorIndex'])->name('medical-records.index');
+        Route::post('medical-records', [MedicalRecordController::class, 'store'])->name('medical-records.store');
+        Route::get('medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
     });
 });
 
