@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ConsultationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,8 +37,7 @@ class Consultation extends Model
     protected $casts = [
         'scheduled_date' => 'date',
         'scheduled_time' => 'datetime',
-        'fee' => 'decimal:2',
-        'status' => ConsultationStatus::class
+        'fee' => 'decimal:2'
     ];
 
     /**
@@ -55,7 +53,7 @@ class Consultation extends Model
      */
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id')->where('role', UserRole::DOCTOR->value);
+        return $this->belongsTo(User::class, 'doctor_id')->where('role', 'doctor');
     }
 
     /**
@@ -86,21 +84,21 @@ class Consultation extends Model
 
     public function scopeCompleted($query)
     {
-        return $query->where('status', ConsultationStatus::COMPLETED->value);
+        return $query->where('status', 'completed');
     }
 
     public function scopePending($query)
     {
-        return $query->where('status', ConsultationStatus::PENDING->value);
+        return $query->where('status', 'pending');
     }
 
     public function scopeInProgress($query)
     {
-        return $query->where('status', ConsultationStatus::IN_PROGRESS->value);
+        return $query->where('status', 'in_progress');
     }
 
     public function scopeCancelled($query)
     {
-        return $query->where('status', ConsultationStatus::CANCELLED->value);
+        return $query->where('status', 'cancelled');
     }
 } 

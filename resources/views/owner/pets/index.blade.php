@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.owner')
+
+@section('title', 'My Pets')
+@section('header', 'My Pets')
 
 @section('content')
 <div class="py-12">
@@ -23,7 +26,7 @@
                         <div class="bg-white rounded-lg shadow-md overflow-hidden">
                             <div class="relative h-48">
                                 @if($pet->photo)
-                                    <img src="{{ asset('storage/' . $pet->photo) }}" alt="{{ $pet->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ Storage::url($pet->photo) }}" alt="{{ $pet->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                                         <span class="text-gray-500">No Photo</span>
@@ -81,7 +84,7 @@
                                                 Delete
                                             </button>
                                         </form>
-                                        <a href="{{ route('owner.consultations.create', ['pet' => $pet->id]) }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                        <a href="{{ route('owner.appointments.create', ['pet' => $pet->id]) }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
                                             Book Consultation
                                         </a>
                                     </div>

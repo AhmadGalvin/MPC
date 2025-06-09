@@ -11,7 +11,7 @@
                 @if(auth()->check())
                     <div class="mb-4 p-4 bg-gray-100 rounded">
                         <p>Logged in as: {{ auth()->user()->name }}</p>
-                        <p>Role: {{ auth()->user()->role->value }}</p>
+                        <p>Role: {{ auth()->user()->role }}</p>
                     </div>
                 @endif
 
@@ -27,7 +27,7 @@
                                         <div class="p-4 border rounded-lg">
                                             <div class="flex items-center">
                                                 @if($pet->photo)
-                                                    <img src="{{ asset('storage/' . $pet->photo) }}" alt="{{ $pet->name }}" class="w-16 h-16 rounded-full object-cover mr-4">
+                                                    <img src="{{ Storage::url($pet->photo) }}" alt="{{ $pet->name }}" class="w-16 h-16 rounded-full object-cover mr-4">
                                                 @else
                                                     <div class="w-16 h-16 rounded-full bg-gray-200 mr-4 flex items-center justify-center">
                                                         <span class="text-gray-500">No Photo</span>
@@ -74,7 +74,7 @@
                             @else
                                 <p class="text-gray-600">No recent consultations.</p>
                             @endif
-                            <a href="{{ route('owner.consultations.create') }}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            <a href="{{ route('owner.appointments.create') }}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                 Book Consultation
                             </a>
                         </div>

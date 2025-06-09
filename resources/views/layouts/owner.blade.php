@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedipetCare Admin - @yield('title')</title>
+    <title>MedipetCare Owner - @yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- Styles -->
@@ -23,33 +23,33 @@
         <div class="w-64 bg-white shadow-lg">
             <div class="p-4">
                 <h1 class="text-2xl font-bold text-primary">MedipetCare</h1>
-                <p class="text-sm text-gray-600">Admin Dashboard</p>
+                <p class="text-sm text-gray-600">Pet Owner Portal</p>
             </div>
             <nav class="mt-4">
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white' : '' }}">
+                <a href="{{ route('owner.dashboard') }}" 
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.dashboard') ? 'bg-primary text-white' : '' }}">
                     <i class="fas fa-chart-line mr-3"></i>
                     Dashboard
                 </a>
-                <a href="{{ route('admin.clinic.profile') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('admin.clinic.*') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-clinic-medical mr-3"></i>
-                    Clinic Profile
+                <a href="{{ route('owner.pets.index') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.pets.*') ? 'bg-primary text-white' : '' }}">
+                    <i class="fas fa-paw mr-3"></i>
+                    My Pets
                 </a>
-                <a href="{{ route('admin.doctors.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('admin.doctors.*') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-user-md mr-3"></i>
-                    Doctors
-                </a>
-                <a href="{{ route('admin.schedules.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('admin.schedules.*') ? 'bg-primary text-white' : '' }}">
+                <a href="{{ route('owner.appointments.index') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.appointments.*') ? 'bg-primary text-white' : '' }}">
                     <i class="fas fa-calendar-alt mr-3"></i>
-                    Schedules
+                    Appointments
                 </a>
-                <a href="{{ route('admin.products.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('admin.products.*') ? 'bg-primary text-white' : '' }}">
+                <a href="{{ route('owner.medical-records') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.medical-records') ? 'bg-primary text-white' : '' }}">
+                    <i class="fas fa-notes-medical mr-3"></i>
+                    Medical Records
+                </a>
+                <a href="{{ route('products.index') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('products.*') ? 'bg-primary text-white' : '' }}">
                     <i class="fas fa-box mr-3"></i>
-                    Products
+                    Shop Products
                 </a>
             </nav>
         </div>

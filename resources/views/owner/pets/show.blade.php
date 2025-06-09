@@ -1,4 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.owner')
+
+@section('title', 'Pet Details')
+@section('header', 'Pet Details')
 
 @section('content')
 <div class="py-12">
@@ -18,7 +21,7 @@
                         <div class="bg-white rounded-lg shadow-md overflow-hidden">
                             <div class="relative h-64">
                                 @if($pet->photo)
-                                    <img src="{{ asset('storage/' . $pet->photo) }}" alt="{{ $pet->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ Storage::url($pet->photo) }}" alt="{{ $pet->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                                         <span class="text-gray-500">No Photo</span>
@@ -94,7 +97,7 @@
                                 <p class="text-gray-500">No consultations available.</p>
                             @endif
                             <div class="mt-4">
-                                <a href="{{ route('owner.consultations.create', ['pet' => $pet->id]) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
+                                <a href="{{ route('owner.appointments.create', ['pet' => $pet->id]) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
                                     Book New Consultation
                                 </a>
                             </div>
