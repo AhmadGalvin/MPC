@@ -15,13 +15,13 @@ class ClinicController extends Controller
 {
     public function profile()
     {
-        $clinic = auth()->user()->ownedClinic()->firstOrFail();
+        $clinic = Clinic::first();
         return view('admin.clinic.profile', compact('clinic'));
     }
 
     public function update(Request $request)
     {
-        $clinic = auth()->user()->ownedClinic()->firstOrFail();
+        $clinic = Clinic::first();
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',

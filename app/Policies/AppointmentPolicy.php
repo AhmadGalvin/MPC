@@ -13,7 +13,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'doctor';
+        return $user->role === 'doctor' || $user->role === 'owner';
     }
 
     /**
@@ -21,7 +21,15 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment): bool
     {
-        return $user->id === $appointment->doctor_id;
+        if ($user->role === 'doctor') {
+            return $user->id === $appointment->doctor_id;
+        }
+        
+        if ($user->role === 'owner') {
+            return $user->id === $appointment->owner_id;
+        }
+
+        return false;
     }
 
     /**
@@ -29,7 +37,7 @@ class AppointmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'doctor';
+        return $user->role === 'owner';
     }
 
     /**
@@ -37,7 +45,15 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        return $user->id === $appointment->doctor_id;
+        if ($user->role === 'doctor') {
+            return $user->id === $appointment->doctor_id;
+        }
+        
+        if ($user->role === 'owner') {
+            return $user->id === $appointment->owner_id && $appointment->status === 'pending';
+        }
+
+        return false;
     }
 
     /**
@@ -45,6 +61,10 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $user->id === $appointment->doctor_id && $appointment->status === 'pending';
+        if ($user->role === 'owner') {
+            return $user->id === $appointment->owner_id && $appointment->status === 'pending';
+        }
+
+        return false;
     }
 } 

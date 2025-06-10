@@ -17,6 +17,7 @@ use App\Http\Controllers\Doctor\PatientController;
 use App\Http\Controllers\Doctor\MedicalRecordController as DoctorMedicalRecordController;
 use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
+use App\Http\Controllers\Owner\AppointmentController as OwnerAppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,20 +38,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Owner Routes
-    Route::middleware(['role:owner'])->name('owner.')->prefix('owner')->group(function () {
-        // Dashboard
-        Route::get('/', [DashboardController::class, 'ownerDashboard'])->name('dashboard');
+    Route::middleware(['auth', 'role:owner'])->name('owner.')->prefix('owner')->group(function () {
+        Route::get('/', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
         
-        // Pet routes
-        Route::resource('pets', PetController::class);
-        Route::post('pets/{pet}/photo', [PetController::class, 'uploadPhoto'])->name('pets.upload-photo');
+        // Pet Routes
+        Route::resource('pets', App\Http\Controllers\Owner\PetController::class);
         
-        // Consultation/Appointment routes
-        Route::get('appointments', [ConsultationController::class, 'ownerIndex'])->name('appointments.index');
-        Route::get('appointments/create', [ConsultationController::class, 'create'])->name('appointments.create');
-        Route::post('appointments', [ConsultationController::class, 'store'])->name('appointments.store');
-        Route::get('appointments/{consultation}', [ConsultationController::class, 'show'])->name('appointments.show');
-        Route::post('appointments/{consultation}/messages', [ConsultationController::class, 'sendMessage'])->name('appointments.messages.store');
+        // Appointment Routes
+        Route::resource('appointments', App\Http\Controllers\Owner\AppointmentController::class);
+        Route::patch('appointments/{appointment}/cancel', [App\Http\Controllers\Owner\AppointmentController::class, 'cancel'])
+            ->name('appointments.cancel');
         
         // Medical Records
         Route::get('medical-records', [MedicalRecordController::class, 'ownerIndex'])->name('medical-records');
@@ -64,12 +61,18 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Doctor Routes
-    Route::middleware(['role:doctor'])->name('doctor.')->prefix('doctor')->group(function () {
-        Route::get('/', function() {
-            return redirect()->route('doctor.dashboard');
-        });
-        Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('appointments', AppointmentController::class);
+    Route::middleware(['auth', 'role:doctor'])->name('doctor.')->prefix('doctor')->group(function () {
+        Route::get('/', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Appointment Routes
+        Route::resource('appointments', App\Http\Controllers\Doctor\AppointmentController::class);
+        Route::patch('appointments/{appointment}/confirm', [App\Http\Controllers\Doctor\AppointmentController::class, 'confirm'])
+            ->name('appointments.confirm');
+        Route::patch('appointments/{appointment}/complete', [App\Http\Controllers\Doctor\AppointmentController::class, 'complete'])
+            ->name('appointments.complete');
+        Route::patch('appointments/{appointment}/cancel', [App\Http\Controllers\Doctor\AppointmentController::class, 'cancel'])
+            ->name('appointments.cancel');
+        
         Route::resource('patients', PatientController::class);
         Route::resource('medical-records', DoctorMedicalRecordController::class);
         Route::resource('prescriptions', PrescriptionController::class);

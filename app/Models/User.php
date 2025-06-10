@@ -48,18 +48,11 @@ class User extends Authenticatable
 
     /**
      * Get the clinic associated with the user.
+     * Since we're using a single clinic system, this will always return the same clinic
      */
-    public function clinic(): BelongsTo
+    public function clinic()
     {
-        return $this->belongsTo(Clinic::class, 'clinic_id');
-    }
-
-    /**
-     * Get the owned clinic associated with the user.
-     */
-    public function ownedClinic(): HasOne
-    {
-        return $this->hasOne(Clinic::class, 'owner_user_id');
+        return Clinic::first();
     }
 
     /**
@@ -109,7 +102,7 @@ class User extends Authenticatable
      */
     public function isDoctor(): bool
     {
-        return $this->hasRole('doctor');
+        return $this->role === 'doctor';
     }
 
     /**
@@ -119,7 +112,7 @@ class User extends Authenticatable
      */
     public function isOwner(): bool
     {
-        return $this->hasRole('owner');
+        return $this->role === 'owner';
     }
 
     /**
@@ -151,5 +144,15 @@ class User extends Authenticatable
     public function medicalRecords(): HasMany
     {
         return $this->hasMany(MedicalRecord::class, 'doctor_id');
+    }
+
+    public function doctorAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'doctor_id');
+    }
+
+    public function ownerAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'owner_id');
     }
 }

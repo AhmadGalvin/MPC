@@ -16,19 +16,20 @@ return new class extends Migration
             $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('clinic_id')->constrained()->onDelete('cascade');
             $table->date('scheduled_date');
             $table->time('scheduled_time');
             $table->string('status')->default('pending'); // pending, confirmed, completed, cancelled, rescheduled
-            $table->string('type'); // checkup, vaccination, surgery, etc.
             $table->text('notes')->nullable();
-            $table->decimal('fee', 10, 2)->nullable();
             $table->timestamp('cancelled_at')->nullable();
             $table->string('cancellation_reason')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('rescheduled_at')->nullable();
             $table->json('previous_schedule')->nullable();
             $table->timestamps();
+
+            // Add index for common queries
+            $table->index(['doctor_id', 'scheduled_date', 'scheduled_time']);
+            $table->index(['owner_id', 'status']);
         });
     }
 

@@ -12,7 +12,6 @@ class Clinic extends Model
     use HasFactory;
 
     protected $fillable = [
-        'owner_user_id',
         'name',
         'address',
         'phone_number',
@@ -25,11 +24,6 @@ class Clinic extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function owner(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'owner_user_id');
-    }
 
     public function doctors(): HasMany
     {

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('clinics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('owner_user_id')->constrained('users')->onDelete('cascade');
             $table->string('name');
             $table->text('address');
             $table->string('phone_number');

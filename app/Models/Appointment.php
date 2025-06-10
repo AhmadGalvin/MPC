@@ -12,30 +12,22 @@ class Appointment extends Model
 
     protected $fillable = [
         'doctor_id',
-        'pet_id',
         'owner_id',
-        'clinic_id',
+        'pet_id',
         'scheduled_date',
         'scheduled_time',
         'status',
-        'type',
         'notes',
-        'fee',
-        'cancelled_at',
-        'cancellation_reason',
         'completed_at',
-        'rescheduled_at',
-        'previous_schedule'
+        'cancelled_at',
+        'cancellation_reason'
     ];
 
     protected $casts = [
         'scheduled_date' => 'date',
         'scheduled_time' => 'datetime',
-        'cancelled_at' => 'datetime',
         'completed_at' => 'datetime',
-        'rescheduled_at' => 'datetime',
-        'previous_schedule' => 'array',
-        'fee' => 'decimal:2'
+        'cancelled_at' => 'datetime'
     ];
 
     /**
@@ -63,10 +55,35 @@ class Appointment extends Model
     }
 
     /**
-     * Get the clinic that owns the appointment.
+     * Scope a query to only include appointments for a specific doctor.
      */
-    public function clinic(): BelongsTo
+    public function scopeForDoctor($query, $doctorId)
     {
-        return $this->belongsTo(Clinic::class);
+        return $query->where('doctor_id', $doctorId);
+    }
+
+    /**
+     * Scope a query to only include appointments for a specific owner.
+     */
+    public function scopeForOwner($query, $ownerId)
+    {
+        return $query->where('owner_id', $ownerId);
+    }
+
+    /**
+     * Scope a query to only include pending appointments.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /**
+     * Scope a query to only include upcoming appointments.
+     */
+    public function scopeUpcoming($query)
+    {
+        return $query->where('scheduled_date', '>=', now()->toDateString())
+                    ->where('status', '!=', 'cancelled');
     }
 } 

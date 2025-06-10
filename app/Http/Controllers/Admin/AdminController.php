@@ -149,9 +149,7 @@ class AdminController extends Controller
     public function getClinicProfile(): JsonResponse
     {
         try {
-            $clinic = Auth::user()->ownedClinic()
-                ->with(['owner', 'doctors'])
-                ->firstOrFail();
+            $clinic = Clinic::with(['doctors'])->first();
 
             return response()->json([
                 'status' => 'success',
