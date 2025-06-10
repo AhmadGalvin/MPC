@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('clinic_admin');
+            $table->enum('role', ['owner', 'doctor', 'clinic_admin'])->default('clinic_admin');
             $table->rememberToken();
             $table->timestamps();
         });

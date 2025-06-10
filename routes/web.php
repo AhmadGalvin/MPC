@@ -11,6 +11,12 @@ use App\Http\Controllers\Admin\ClinicController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\MedicalRecordController;
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\Doctor\AppointmentController;
+use App\Http\Controllers\Doctor\PatientController;
+use App\Http\Controllers\Doctor\MedicalRecordController as DoctorMedicalRecordController;
+use App\Http\Controllers\Doctor\PrescriptionController;
+use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,20 +65,15 @@ Route::middleware(['auth'])->group(function () {
 
     // Doctor Routes
     Route::middleware(['role:doctor'])->name('doctor.')->prefix('doctor')->group(function () {
-        // Dashboard
-        Route::get('/', [DashboardController::class, 'doctorDashboard'])->name('dashboard');
-        
-        // Consultations
-        Route::get('consultations', [ConsultationController::class, 'doctorIndex'])->name('consultations.index');
-        Route::get('consultations/{consultation}', [ConsultationController::class, 'show'])->name('consultations.show');
-        Route::put('consultations/{consultation}', [ConsultationController::class, 'update'])->name('consultations.update');
-        Route::post('consultations/{consultation}/complete', [ConsultationController::class, 'complete'])->name('consultations.complete');
-        Route::post('consultations/{consultation}/messages', [ConsultationController::class, 'sendMessage'])->name('consultations.messages.store');
-        
-        // Medical Records
-        Route::get('medical-records', [MedicalRecordController::class, 'doctorIndex'])->name('medical-records.index');
-        Route::post('medical-records', [MedicalRecordController::class, 'store'])->name('medical-records.store');
-        Route::get('medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
+        Route::get('/', function() {
+            return redirect()->route('doctor.dashboard');
+        });
+        Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('appointments', AppointmentController::class);
+        Route::resource('patients', PatientController::class);
+        Route::resource('medical-records', DoctorMedicalRecordController::class);
+        Route::resource('prescriptions', PrescriptionController::class);
+        Route::get('/schedule', [DoctorScheduleController::class, 'index'])->name('schedule');
     });
 });
 

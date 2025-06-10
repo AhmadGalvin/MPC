@@ -44,5 +44,11 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => UserRole::CLINIC_ADMIN,
         ]);
+
+        // Call Seeders
+        $this->call([
+            DoctorSeeder::class,
+            AppointmentSeeder::class,
+        ]);
     }
 }
