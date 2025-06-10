@@ -21,13 +21,13 @@
         @if(session('error'))
             <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                 {{ session('error') }}
-            </div>
-        @endif
+                                    </div>
+                                @endif
 
         <div class="bg-white rounded-lg shadow-sm border">
             <div class="p-6">
                 <div class="flex justify-between items-start">
-                    <div>
+                <div>
                         <h2 class="text-2xl font-bold mb-4">Appointment Information</h2>
                         <div class="space-y-4">
                             <div>
@@ -39,7 +39,7 @@
                                     {{ $appointment->status === 'confirmed' ? 'bg-blue-100 text-blue-800' : '' }}">
                                     {{ ucfirst($appointment->status) }}
                                 </span>
-                            </div>
+                </div>
 
                             <div>
                                 <p class="text-sm text-gray-500">Schedule</p>
@@ -53,7 +53,7 @@
                                 <p class="text-sm text-gray-500">Pet</p>
                                 <p class="font-medium">{{ $appointment->pet->name }}</p>
                                 <p class="text-sm text-gray-600">{{ $appointment->pet->species }} - {{ $appointment->pet->breed }}</p>
-                            </div>
+                </div>
 
                             <div>
                                 <p class="text-sm text-gray-500">Doctor</p>
@@ -61,24 +61,24 @@
                             </div>
 
                             @if($appointment->notes)
-                                <div>
+                            <div>
                                     <p class="text-sm text-gray-500">Notes</p>
                                     <p class="text-gray-700">{{ $appointment->notes }}</p>
-                                </div>
-                            @endif
-                        </div>
                     </div>
+                @endif
+                        </div>
+            </div>
 
                     @if($appointment->status === 'pending')
                         <div>
                             <form action="{{ route('owner.appointments.cancel', $appointment) }}" method="POST" 
                                   onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
-                                @csrf
+                        @csrf
                                 @method('PATCH')
-                                <button type="submit" 
+                            <button type="submit" 
                                         class="bg-red-100 text-red-700 px-4 py-2 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                     Cancel Appointment
-                                </button>
+                            </button>
                             </form>
                         </div>
                     @endif
@@ -87,4 +87,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

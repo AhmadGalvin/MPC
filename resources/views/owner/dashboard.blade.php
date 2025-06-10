@@ -36,14 +36,14 @@
                     </div>
                 </div>
             </a>
-        </div>
+    </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">Upcoming Appointments</h3>
-                    <a href="{{ route('owner.appointments.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">View All →</a>
-                </div>
+                <a href="{{ route('owner.appointments.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">View All →</a>
+            </div>
 
                 @php
                     $upcomingAppointments = auth()->user()->ownerAppointments()
@@ -57,9 +57,9 @@
                 @endphp
 
                 @if($upcomingAppointments->count() > 0)
-                    <div class="space-y-4">
+            <div class="space-y-4">
                         @foreach($upcomingAppointments as $appointment)
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div>
                                     <div class="text-sm font-medium text-gray-900">
                                         {{ \Carbon\Carbon::parse($appointment->scheduled_date)->format('M d, Y') }}
@@ -90,20 +90,20 @@
                         <p class="mt-2">No upcoming appointments</p>
                     </div>
                 @endif
-            </div>
+        </div>
 
             <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold">My Pets</h3>
-                    <a href="{{ route('owner.pets.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">View All →</a>
-                </div>
+                <a href="{{ route('owner.pets.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">View All →</a>
+            </div>
 
                 @if(auth()->user()->pets->count() > 0)
-                    <div class="space-y-4">
+            <div class="space-y-4">
                         @foreach(auth()->user()->pets->take(3) as $pet)
                             <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                                <div class="flex-shrink-0">
-                                    @if($pet->photo)
+                            <div class="flex-shrink-0">
+                                @if($pet->photo)
                                         <img src="{{ asset('storage/' . $pet->photo) }}" alt="{{ $pet->name }}" class="h-12 w-12 rounded-full object-cover">
                                     @else
                                         <div class="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
@@ -112,16 +112,16 @@
                                             </svg>
                                         </div>
                                     @endif
-                                </div>
+                            </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ $pet->name }}</p>
                                     <p class="text-sm text-gray-500">{{ $pet->species }} - {{ $pet->breed }}</p>
-                                </div>
-                                <a href="{{ route('owner.pets.show', $pet) }}" class="text-blue-600 hover:text-blue-800">
+                        </div>
+                        <a href="{{ route('owner.pets.show', $pet) }}" class="text-blue-600 hover:text-blue-800">
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                     </svg>
-                                </a>
+                        </a>
                             </div>
                         @endforeach
                     </div>

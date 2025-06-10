@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
         
         // Pet Routes
         Route::resource('pets', App\Http\Controllers\Owner\PetController::class);
+        Route::post('pets/{pet}/photo', [App\Http\Controllers\Owner\PetController::class, 'uploadPhoto'])->name('pets.upload-photo');
         
         // Appointment Routes
         Route::resource('appointments', App\Http\Controllers\Owner\AppointmentController::class);
