@@ -58,20 +58,35 @@ class MedicalRecordController extends Controller
             ->exists();
 
         if (!$hasAccess) {
-            abort(403, 'You do not have access to create records for this patient.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You do not have access to create records for this patient.'
+            ], 403);
         }
 
-        $record = MedicalRecord::create([
-            'doctor_id' => $doctor->id,
-            'pet_id' => $validated['pet_id'],
-            'diagnosis' => $validated['diagnosis'],
-            'treatment' => $validated['treatment'],
-            'notes' => $validated['notes'],
-            'next_visit_date' => $validated['next_visit_date'],
-        ]);
+        try {
+            $record = MedicalRecord::create([
+                'doctor_id' => $doctor->id,
+                'pet_id' => $validated['pet_id'],
+                'diagnosis' => $validated['diagnosis'],
+                'treatment' => $validated['treatment'],
+                'notes' => $validated['notes'],
+                'next_visit_date' => $validated['next_visit_date'],
+            ]);
 
-        return redirect()->route('doctor.medical-records.show', $record)
-            ->with('success', 'Medical record created successfully.');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Medical record created successfully',
+                'data' => $record->load(['pet', 'pet.owner', 'doctor'])
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create medical record',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
