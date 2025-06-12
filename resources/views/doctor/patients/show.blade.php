@@ -17,8 +17,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Pet Photo -->
                 <div class="md:col-span-1">
-                    @if($patient->photo_path)
-                        <img src="{{ asset('storage/' . $patient->photo_path) }}" alt="{{ $patient->name }}" class="w-full h-auto rounded-lg">
+                    @if($patient->photo)
+                        <img src="{{ Storage::url($patient->photo) }}" alt="{{ $patient->name }}" class="w-full h-auto rounded-lg">
                     @else
                         <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
                             <i class="fas fa-paw text-gray-400 text-6xl"></i>
@@ -78,7 +78,13 @@
         <!-- Medical Records Form -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h2 class="text-xl font-semibold mb-4">Add Medical Record</h2>
-            <form action="{{ route('doctor.medical-records.store') }}" method="POST">
+            
+            <!-- Success Message -->
+            <div id="successMessage" class="hidden mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">Medical record added successfully!</span>
+            </div>
+
+            <form id="medicalRecordForm" class="space-y-4">
                 @csrf
                 <input type="hidden" name="pet_id" value="{{ $patient->id }}">
                 
@@ -87,27 +93,21 @@
                         <label for="diagnosis" class="block text-sm font-medium text-gray-700">Diagnosis</label>
                         <textarea name="diagnosis" id="diagnosis" rows="3" required
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('diagnosis') }}</textarea>
-                        @error('diagnosis')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <p class="mt-1 text-sm text-red-600 hidden" id="diagnosisError"></p>
                     </div>
 
                     <div>
                         <label for="treatment" class="block text-sm font-medium text-gray-700">Treatment</label>
                         <textarea name="treatment" id="treatment" rows="3" required
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('treatment') }}</textarea>
-                        @error('treatment')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <p class="mt-1 text-sm text-red-600 hidden" id="treatmentError"></p>
                     </div>
 
                     <div>
                         <label for="notes" class="block text-sm font-medium text-gray-700">Additional Notes</label>
                         <textarea name="notes" id="notes" rows="3"
                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('notes') }}</textarea>
-                        @error('notes')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <p class="mt-1 text-sm text-red-600 hidden" id="notesError"></p>
                     </div>
 
                     <div>
@@ -115,9 +115,7 @@
                         <input type="date" name="next_visit_date" id="next_visit_date"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                                value="{{ old('next_visit_date') }}">
-                        @error('next_visit_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <p class="mt-1 text-sm text-red-600 hidden" id="nextVisitDateError"></p>
                     </div>
 
                     <div class="flex justify-end">
@@ -171,4 +169,55 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
+
+@push('scripts')
+<script>
+document.getElementById('medicalRecordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Reset error messages
+    document.querySelectorAll('.text-red-600').forEach(el => el.classList.add('hidden'));
+    document.getElementById('successMessage').classList.add('hidden');
+    
+    // Get form data
+    const formData = new FormData(this);
+    
+    // Send AJAX request
+    fetch('{{ route('doctor.medical-records.store') }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Show success message
+            document.getElementById('successMessage').classList.remove('hidden');
+            
+            // Clear form
+            this.reset();
+            
+            // Refresh medical records section
+            window.location.reload();
+        } else {
+            // Handle validation errors
+            if (data.errors) {
+                Object.keys(data.errors).forEach(field => {
+                    const errorElement = document.getElementById(field + 'Error');
+                    if (errorElement) {
+                        errorElement.textContent = data.errors[field][0];
+                        errorElement.classList.remove('hidden');
+                    }
+                });
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+@endpush 
