@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pet;
+use App\Models\MedicalRecord;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -16,7 +17,10 @@ class PatientController extends Controller
         $doctor = auth()->user();
         $patients = Pet::whereHas('appointments', function ($query) use ($doctor) {
             $query->where('doctor_id', $doctor->id);
-        })->with('owner')->paginate(10);
+        })->with(['owner', 'appointments' => function ($query) use ($doctor) {
+            $query->where('doctor_id', $doctor->id)
+                  ->latest('scheduled_date');
+        }])->paginate(10);
 
         return view('doctor.patients.index', compact('patients'));
     }
@@ -37,9 +41,9 @@ class PatientController extends Controller
             abort(403, 'You do not have access to this patient\'s records.');
         }
 
-        $patient->load(['owner', 'appointments' => function ($query) use ($doctor) {
+        $patient->load(['owner', 'medicalRecords' => function ($query) use ($doctor) {
             $query->where('doctor_id', $doctor->id)
-                  ->with('medicalRecords');
+                  ->latest();
         }]);
 
         return view('doctor.patients.show', compact('patient'));

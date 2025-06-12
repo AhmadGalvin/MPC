@@ -18,8 +18,19 @@ class MedicalRecord extends Model
     protected $fillable = [
         'pet_id',
         'doctor_id',
-        'title',
-        'description'
+        'diagnosis',
+        'treatment',
+        'notes',
+        'next_visit_date'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'next_visit_date' => 'date'
     ];
 
     /**

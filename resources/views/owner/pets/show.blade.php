@@ -62,11 +62,31 @@
                                     @foreach($pet->medicalRecords->sortByDesc('created_at') as $record)
                                         <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                             <div class="flex justify-between items-start mb-2">
-                                                <h4 class="font-semibold text-lg">{{ $record->title }}</h4>
-                                                <span class="text-sm text-gray-500">{{ $record->created_at ? $record->created_at->format('M d, Y') : 'Date not set' }}</span>
+                                                <div>
+                                                    <p class="text-sm text-gray-500">{{ $record->created_at->format('M d, Y') }}</p>
+                                                    <p class="font-medium">By Dr. {{ $record->doctor->name }}</p>
+                                                </div>
                                             </div>
-                                            <p class="text-gray-600">{{ $record->description }}</p>
-                                            <p class="mt-2 text-sm text-gray-500">By Dr. {{ optional($record->doctor)->name ?? 'Unknown' }}</p>
+                                            <div class="mt-4">
+                                                <h4 class="text-sm font-medium text-gray-700">Diagnosis</h4>
+                                                <p class="text-sm text-gray-900">{{ $record->diagnosis }}</p>
+                                            </div>
+                                            <div class="mt-4">
+                                                <h4 class="text-sm font-medium text-gray-700">Treatment</h4>
+                                                <p class="text-sm text-gray-900">{{ $record->treatment }}</p>
+                                            </div>
+                                            @if($record->notes)
+                                                <div class="mt-4">
+                                                    <h4 class="text-sm font-medium text-gray-700">Additional Notes</h4>
+                                                    <p class="text-sm text-gray-900">{{ $record->notes }}</p>
+                                                </div>
+                                            @endif
+                                            @if($record->next_visit_date)
+                                                <div class="mt-4">
+                                                    <h4 class="text-sm font-medium text-gray-700">Next Visit Date</h4>
+                                                    <p class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($record->next_visit_date)->format('M d, Y') }}</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
