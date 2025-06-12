@@ -26,6 +26,8 @@ class DoctorSeeder extends Seeder
                 'doctor' => [
                     'specialization' => 'Small Animal Medicine',
                     'sip_number' => 'SIP-001-2024',
+                    'consultation_fee' => 100000,
+                    'is_available_for_consultation' => false,
                     'schedule' => [
                         [
                             'day' => 'monday',
@@ -55,6 +57,8 @@ class DoctorSeeder extends Seeder
                 'doctor' => [
                     'specialization' => 'Surgery',
                     'sip_number' => 'SIP-002-2024',
+                    'consultation_fee' => 100000,
+                    'is_available_for_consultation' => false,
                     'schedule' => [
                         [
                             'day' => 'tuesday',
@@ -84,6 +88,8 @@ class DoctorSeeder extends Seeder
                 'doctor' => [
                     'specialization' => 'Internal Medicine',
                     'sip_number' => 'SIP-003-2024',
+                    'consultation_fee' => 100000,
+                    'is_available_for_consultation' => false,
                     'schedule' => [
                         [
                             'day' => 'monday',

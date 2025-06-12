@@ -72,7 +72,7 @@
                                             Delete
                                         </button>
                                     </form>
-                                    <a href="{{ route('owner.appointments.create', ['pet' => $pet->id]) }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                    <a href="{{ route('owner.consultations.choose-doctor', ['pet' => $pet->id]) }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
                                         Book Consultation
                                     </a>
                                 </div>
