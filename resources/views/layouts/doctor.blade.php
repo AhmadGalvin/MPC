@@ -41,10 +41,10 @@
                     <i class="fas fa-paw mr-3"></i>
                     Patients
                 </a>
-                <a href="{{ route('doctor.medical-records.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('doctor.medical-records.*') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-notes-medical mr-3"></i>
-                    Medical Records
+                <a href="{{ route('doctor.consultations.index') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('doctor.consultations.*') ? 'bg-primary text-white' : '' }}">
+                    <i class="fas fa-comments mr-3"></i>
+                    Consultations
                 </a>
                 <a href="{{ route('doctor.prescriptions.index') }}"
                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('doctor.prescriptions.*') ? 'bg-primary text-white' : '' }}">

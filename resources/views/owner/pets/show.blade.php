@@ -117,7 +117,7 @@
                                 <p class="text-gray-500">No consultations available.</p>
                             @endif
                             <div class="mt-4">
-                                <a href="{{ route('owner.appointments.create', ['pet' => $pet->id]) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
+                                <a href="{{ route('owner.consultations.choose-doctor', ['pet' => $pet->id]) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
                                     Book New Consultation
                                 </a>
                             </div>
