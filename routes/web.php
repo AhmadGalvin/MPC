@@ -18,6 +18,7 @@ use App\Http\Controllers\Doctor\MedicalRecordController as DoctorMedicalRecordCo
 use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
 use App\Http\Controllers\Owner\AppointmentController as OwnerAppointmentController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -139,6 +140,14 @@ Route::middleware(['auth', 'role:clinic_admin'])->prefix('admin')->name('admin.'
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+// Payment Routes
+Route::prefix('payments')->name('payments.')->group(function () {
+    Route::get('process/{consultation}', [PaymentController::class, 'process'])->name('process');
+    Route::post('callback', [PaymentController::class, 'callback'])->name('callback');
+    Route::get('success/{consultation}', [PaymentController::class, 'success'])->name('success');
+    Route::get('failed/{consultation}', [PaymentController::class, 'failed'])->name('failed');
 });
 
 require __DIR__.'/auth.php';

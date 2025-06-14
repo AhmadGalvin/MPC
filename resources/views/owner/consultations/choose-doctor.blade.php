@@ -42,10 +42,15 @@
                     </div>
 
                     <div class="mt-4">
-                        <a href="{{ route('owner.consultations.create', ['doctor' => $doctor->id]) }}" 
-                           class="block w-full bg-primary text-white text-center px-4 py-2 rounded-md hover:bg-primary-dark">
-                            Book Consultation
-                        </a>
+                        <form action="{{ route('owner.consultations.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="doctor_id" value="{{ $doctor->doctor_id }}">
+                            <input type="hidden" name="pet_id" value="{{ request('pet') }}">
+                            <input type="hidden" name="fee" value="{{ $doctor->consultation_fee }}">
+                            <button type="submit" class="block w-full bg-primary text-white text-center px-4 py-2 rounded-md hover:bg-primary-dark">
+                                Book Consultation
+                            </button>
+                        </form>
                     </div>
                 </div>
             @empty

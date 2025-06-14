@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->foreignId('doctor_id')->constrained()->onDelete('cascade');
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
-            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

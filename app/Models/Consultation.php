@@ -20,13 +20,23 @@ class Consultation extends Model
     protected $fillable = [
         'pet_id',
         'doctor_id',
-        'clinic_id',
         'owner_id',
         'scheduled_date',
         'scheduled_time',
         'status',
+        'payment_status',
+        'payment_token',
+        'payment_url',
+        'payment_method',
+        'transaction_id',
         'fee',
-        'notes'
+        'notes',
+        'cancelled_at',
+        'cancellation_reason',
+        'completed_at',
+        'rescheduled_at',
+        'previous_schedule',
+        'paid_at'
     ];
 
     /**
@@ -37,7 +47,12 @@ class Consultation extends Model
     protected $casts = [
         'scheduled_date' => 'date',
         'scheduled_time' => 'datetime',
-        'fee' => 'decimal:2'
+        'fee' => 'decimal:2',
+        'cancelled_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'rescheduled_at' => 'datetime',
+        'paid_at' => 'datetime',
+        'previous_schedule' => 'array'
     ];
 
     /**
@@ -53,7 +68,7 @@ class Consultation extends Model
      */
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'doctor_id')->where('role', 'doctor');
+        return $this->belongsTo(Doctor::class, 'doctor_id')->with('user');
     }
 
     /**
@@ -62,11 +77,6 @@ class Consultation extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
-    }
-
-    public function clinic(): BelongsTo
-    {
-        return $this->belongsTo(Clinic::class);
     }
 
     /**

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->time('scheduled_time')->after('scheduled_date')->nullable();
             $table->decimal('fee', 10, 2)->nullable()->after('scheduled_time');
             $table->text('notes')->nullable()->after('fee');
-            $table->foreignId('clinic_id')->after('owner_id')->constrained()->onDelete('cascade');
             $table->timestamp('cancelled_at')->nullable()->after('notes');
             $table->string('cancellation_reason')->nullable()->after('cancelled_at');
             $table->timestamp('completed_at')->nullable()->after('cancellation_reason');
@@ -31,13 +30,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('consultations', function (Blueprint $table) {
-            $table->dropForeign(['clinic_id']);
             $table->dropColumn([
                 'scheduled_date',
                 'scheduled_time',
                 'fee',
                 'notes',
-                'clinic_id',
                 'cancelled_at',
                 'cancellation_reason',
                 'completed_at',

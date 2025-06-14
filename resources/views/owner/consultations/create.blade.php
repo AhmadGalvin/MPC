@@ -21,34 +21,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('owner.consultations.store') }}" method="POST" class="space-y-6">
-                    @csrf
-
-                    <!-- Pet Selection -->
-                    <div>
-                        <label for="pet_id" class="block text-sm font-medium text-gray-700">Select Pet</label>
-                        <select id="pet_id" name="pet_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                            <option value="">Choose a pet</option>
-                            @foreach($pets as $pet)
-                                <option value="{{ $pet->id }}" {{ old('pet_id') == $pet->id ? 'selected' : '' }}>
-                                    {{ $pet->name }} ({{ $pet->species }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Doctor Selection -->
-                    <div>
-                        <label for="doctor_id" class="block text-sm font-medium text-gray-700">Select Doctor</label>
-                        <select id="doctor_id" name="doctor_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                            <option value="">Choose a doctor</option>
-                            @foreach($doctors as $doctor)
-                                <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
-                                    Dr. {{ $doctor->name }} {{ $doctor->specialization ? '(' . $doctor->specialization . ')' : '' }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                
 
                     <!-- Date and Time -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
