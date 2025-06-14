@@ -40,6 +40,9 @@ class MidtransService
                     'name' => 'Consultation with Dr. ' . $consultation->doctor->user->name,
                 ]
             ],
+            'callbacks' => [
+                'finish' => route('payments.success', ['consultation' => $consultation->id]),
+            ],
         ];
 
         try {

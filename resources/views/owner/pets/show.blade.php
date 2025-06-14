@@ -97,25 +97,7 @@
 
                         <!-- Recent Consultations -->
                         <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                            <h3 class="text-xl font-semibold mb-4">Recent Consultations</h3>
-                            @if($pet->consultations && $pet->consultations->count() > 0)
-                                <div class="space-y-4">
-                                    @foreach($pet->consultations->sortByDesc('scheduled_date') as $consultation)
-                                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                            <div class="flex justify-between items-start">
-                                                <div>
-                                                    <p class="font-medium">Dr. {{ optional($consultation->doctor)->name ?? 'Unknown' }}</p>
-                                                    <p class="text-sm text-gray-500">{{ $consultation->scheduled_date ? $consultation->scheduled_date->format('M d, Y') : 'Date not set' }}</p>
-                                                    <p class="text-sm text-gray-500">{{ $consultation->scheduled_time ? $consultation->scheduled_time->format('h:i A') : 'Time not set' }}</p>
-                                                </div>
-                                                <a href="{{ route('owner.consultations.show', $consultation) }}" class="text-blue-500 hover:text-blue-700">View Details</a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="text-gray-500">No consultations available.</p>
-                            @endif
+                            <h3 class="text-xl font-semibold mb-4">Consultations</h3>
                             <div class="mt-4">
                                 <a href="{{ route('owner.consultations.choose-doctor', ['pet' => $pet->id]) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded inline-block">
                                     Book New Consultation

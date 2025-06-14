@@ -51,8 +51,15 @@ class PaymentController extends Controller
 
     public function success(Consultation $consultation)
     {
-        return redirect()->route('owner.consultations.show', $consultation)
-            ->with('success', 'Payment successful! Your consultation has been confirmed.');
+        // Update consultation status and payment status
+        $consultation->update([
+            'status' => 'confirmed',
+            'payment_status' => 'paid',
+            'paid_at' => now()
+        ]);
+
+        return redirect()->route('owner.consultations.choose-doctors')
+            ->with('success', 'Payment successful! You can now start chatting with the doctor.');
     }
 
     public function failed(Consultation $consultation)

@@ -6,6 +6,12 @@
 @section('content')
 <div class="py-6">
     <div class="max-w-7xl mx-auto px-4">
+        @if(session('success'))
+            <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold">Available Doctors</h2>
             <a href="{{ url()->previous() }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
@@ -42,15 +48,30 @@
                     </div>
 
                     <div class="mt-4">
-                        <form action="{{ route('owner.consultations.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="doctor_id" value="{{ $doctor->doctor_id }}">
-                            <input type="hidden" name="pet_id" value="{{ request('pet') }}">
-                            <input type="hidden" name="fee" value="{{ $doctor->consultation_fee }}">
-                            <button type="submit" class="block w-full bg-primary text-white text-center px-4 py-2 rounded-md hover:bg-primary-dark">
-                                Book Consultation
-                            </button>
-                        </form>
+                        @php
+                            $activeConsultation = \App\Models\Consultation::where('doctor_id', $doctor->doctor_id)
+                                ->where('owner_id', auth()->id())
+                                ->where('payment_status', 'paid')
+                                ->where('status', 'confirmed')
+                                ->first();
+                        @endphp
+
+                        @if($activeConsultation)
+                            <a href="{{ route('owner.chat.show', $activeConsultation) }}" 
+                               class="block w-full bg-green-500 text-white text-center px-4 py-2 rounded-md hover:bg-green-600">
+                                Chat with Doctor
+                            </a>
+                        @else
+                            <form action="{{ route('owner.consultations.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="doctor_id" value="{{ $doctor->doctor_id }}">
+                                <input type="hidden" name="pet_id" value="{{ request('pet') }}">
+                                <input type="hidden" name="fee" value="{{ $doctor->consultation_fee }}">
+                                <button type="submit" class="block w-full bg-primary text-white text-center px-4 py-2 rounded-md hover:bg-primary-dark">
+                                    Book Consultation
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @empty

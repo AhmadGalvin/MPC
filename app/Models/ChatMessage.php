@@ -18,7 +18,8 @@ class ChatMessage extends Model
     protected $fillable = [
         'consultation_id',
         'sender_id',
-        'message'
+        'message',
+        'is_read'
     ];
 
     /**
@@ -28,7 +29,8 @@ class ChatMessage extends Model
      */
     protected $casts = [
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
+        'is_read' => 'boolean'
     ];
 
     /**

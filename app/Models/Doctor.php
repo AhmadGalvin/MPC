@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Doctor extends Model
 {
@@ -29,7 +30,9 @@ class Doctor extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'schedule' => 'array'
+        'schedule' => 'array',
+        'is_available_for_consultation' => 'boolean',
+        'consultation_fee' => 'decimal:2'
     ];
 
     /**
@@ -38,5 +41,13 @@ class Doctor extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the consultations for the doctor.
+     */
+    public function consultations(): HasMany
+    {
+        return $this->hasMany(Consultation::class);
     }
 } 

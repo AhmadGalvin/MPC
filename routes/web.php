@@ -59,6 +59,15 @@ Route::middleware(['auth'])->group(function () {
         // Medical Records
         Route::get('medical-records', [MedicalRecordController::class, 'ownerIndex'])->name('medical-records');
         Route::get('medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
+
+        // Chat Routes
+        Route::get('/consultations/{consultation}/chat', [App\Http\Controllers\Owner\ChatController::class, 'show'])->name('chat.show');
+        Route::get('/consultations/{consultation}/messages', [App\Http\Controllers\Owner\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('/consultations/{consultation}/messages', [App\Http\Controllers\Owner\ChatController::class, 'store'])->name('chat.store');
+
+        Route::get('/payments/processing', function () {
+            return view('owner.payments.processing');
+        })->name('payments.processing');
     });
 
     // Product routes
@@ -85,9 +94,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('prescriptions', PrescriptionController::class);
         Route::get('/schedule', [DoctorScheduleController::class, 'index'])->name('schedule');
         
-        // Doctor Consultation Routes
+        // Consultations
         Route::get('/consultations', [App\Http\Controllers\Doctor\ConsultationController::class, 'index'])->name('consultations.index');
+        Route::get('/consultations/{consultation}', [App\Http\Controllers\Doctor\ConsultationController::class, 'show'])->name('consultations.show');
         Route::post('/consultations/toggle-status', [App\Http\Controllers\Doctor\ConsultationController::class, 'toggleStatus'])->name('consultations.toggle-status');
+        
+        // Chat
+        Route::get('/consultations/{consultation}/chat', [App\Http\Controllers\Doctor\ChatController::class, 'show'])->name('chat.show');
+        Route::get('/consultations/{consultation}/messages', [App\Http\Controllers\Doctor\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('/consultations/{consultation}/messages', [App\Http\Controllers\Doctor\ChatController::class, 'storeMessage'])->name('chat.store');
     });
 });
 

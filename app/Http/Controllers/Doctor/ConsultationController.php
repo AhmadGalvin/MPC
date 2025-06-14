@@ -15,7 +15,7 @@ class ConsultationController extends Controller
     public function index()
     {
         $doctor = Doctor::where('user_id', auth()->id())->first();
-        $consultations = Consultation::where('doctor_id', auth()->id())
+        $consultations = Consultation::where('doctor_id', $doctor->id)
             ->with(['pet', 'pet.owner'])
             ->orderBy('scheduled_date', 'asc')
             ->orderBy('scheduled_time', 'asc')
