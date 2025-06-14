@@ -1,104 +1,123 @@
-@extends('layouts.app')
+@extends('layouts.doctor')
+
+@section('title', 'Consultations')
+@section('header', 'Consultations')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="py-6">
+    <div class="max-w-7xl mx-auto px-4">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold">My Consultations</h2>
+            <div class="p-6">
+                <!-- Status Toggle Section -->
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-semibold">Consultation Status</h2>
+                        <p class="text-gray-600 mt-1">
+                            You are currently 
+                            <span class="font-medium {{ $doctor->is_available_for_consultation ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $doctor->is_available_for_consultation ? 'accepting' : 'not accepting' }}
+                            </span> 
+                            consultations
+                        </p>
+                    </div>
+                    <form action="{{ route('doctor.consultations.toggle-status') }}" method="POST">
+                        @csrf
+                        <button type="submit" 
+                                class="px-4 py-2 rounded-md {{ $doctor->is_available_for_consultation 
+                                    ? 'bg-red-500 hover:bg-red-600' 
+                                    : 'bg-green-500 hover:bg-green-600' }} text-white">
+                            {{ $doctor->is_available_for_consultation ? 'Close Session' : 'Open Session' }}
+                        </button>
+                    </form>
                 </div>
 
+                <!-- Success Message -->
                 @if(session('success'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <span class="block sm:inline">{{ session('success') }}</span>
+                    <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                        {{ session('success') }}
                     </div>
                 @endif
 
-                @if(session('error'))
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <span class="block sm:inline">{{ session('error') }}</span>
-                    </div>
-                @endif
-
-                @if($consultations->isEmpty())
-                    <div class="text-center py-8">
-                        <p class="text-gray-600 mb-4">No consultations found.</p>
-                    </div>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Date & Time
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Pet & Owner
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($consultations as $consultation)
+                <!-- Consultations List -->
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold mb-4">Scheduled Consultations</h3>
+                    
+                    @if($consultations->isEmpty())
+                        <div class="bg-gray-50 rounded-lg p-6 text-center">
+                            <p class="text-gray-500">No consultations scheduled at the moment.</p>
+                        </div>
+                    @else
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead class="bg-gray-50">
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ \Carbon\Carbon::parse($consultation->scheduled_date)->format('M d, Y') }}<br>
-                                            <span class="text-gray-500">{{ \Carbon\Carbon::parse($consultation->scheduled_time)->format('h:i A') }}</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                @if($consultation->pet->photo)
-                                                    <img class="h-8 w-8 rounded-full object-cover mr-2" src="{{ asset('storage/' . $consultation->pet->photo) }}" alt="">
-                                                @else
-                                                    <div class="h-8 w-8 rounded-full bg-gray-200 mr-2 flex items-center justify-center">
-                                                        <span class="text-xs text-gray-500">No Photo</span>
-                                                    </div>
-                                                @endif
-                                                <div>
-                                                    <div class="text-sm font-medium text-gray-900">
-                                                        {{ $consultation->pet->name }}
-                                                    </div>
-                                                    <div class="text-sm text-gray-500">
-                                                        Owner: {{ $consultation->pet->owner->name }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                @if($consultation->status === 'confirmed') bg-green-100 text-green-800
-                                                @elseif($consultation->status === 'cancelled') bg-red-100 text-red-800
-                                                @elseif($consultation->status === 'completed') bg-blue-100 text-blue-800
-                                                @else bg-yellow-100 text-yellow-800
-                                                @endif">
-                                                {{ ucfirst($consultation->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('doctor.consultations.show', $consultation) }}" class="text-blue-600 hover:text-blue-900">View Details</a>
-                                            @if($consultation->status === 'pending')
-                                                <form action="{{ route('doctor.consultations.update-status', $consultation) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <input type="hidden" name="status" value="confirmed">
-                                                    <button type="submit" class="ml-2 text-green-600 hover:text-green-900">
-                                                        Confirm
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date & Time
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Pet
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Owner
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions
+                                        </th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    @foreach($consultations as $consultation)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ \Carbon\Carbon::parse($consultation->scheduled_date)->format('M d, Y') }}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ \Carbon\Carbon::parse($consultation->scheduled_time)->format('h:i A') }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $consultation->pet->name }}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ $consultation->pet->species }} - {{ $consultation->pet->breed }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $consultation->pet->owner->name }}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ $consultation->pet->owner->email }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                    {{ $consultation->status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                                       ($consultation->status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                                       'bg-yellow-100 text-yellow-800') }}">
+                                                    {{ ucfirst($consultation->status) }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">View Details</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="mt-4">
+                            {{ $consultations->links() }}
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

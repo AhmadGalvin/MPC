@@ -50,6 +50,11 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('appointments/{appointment}/cancel', [App\Http\Controllers\Owner\AppointmentController::class, 'cancel'])
             ->name('appointments.cancel');
         
+        // Consultation Routes
+        Route::get('consultations/choose-doctor', [App\Http\Controllers\Owner\ConsultationController::class, 'chooseDoctors'])->name('consultations.choose-doctor');
+        Route::get('consultations/create', [App\Http\Controllers\Owner\ConsultationController::class, 'create'])->name('consultations.create');
+        Route::post('consultations', [App\Http\Controllers\Owner\ConsultationController::class, 'store'])->name('consultations.store');
+        
         // Medical Records
         Route::get('medical-records', [MedicalRecordController::class, 'ownerIndex'])->name('medical-records');
         Route::get('medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
@@ -78,6 +83,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('medical-records', DoctorMedicalRecordController::class);
         Route::resource('prescriptions', PrescriptionController::class);
         Route::get('/schedule', [DoctorScheduleController::class, 'index'])->name('schedule');
+        
+        // Doctor Consultation Routes
+        Route::get('/consultations', [App\Http\Controllers\Doctor\ConsultationController::class, 'index'])->name('consultations.index');
+        Route::post('/consultations/toggle-status', [App\Http\Controllers\Doctor\ConsultationController::class, 'toggleStatus'])->name('consultations.toggle-status');
     });
 });
 

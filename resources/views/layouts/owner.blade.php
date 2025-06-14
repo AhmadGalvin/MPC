@@ -41,11 +41,6 @@
                     <i class="fas fa-calendar-alt mr-3"></i>
                     Appointments
                 </a>
-                <a href="{{ route('owner.medical-records') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.medical-records') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-notes-medical mr-3"></i>
-                    Medical Records
-                </a>
                 <a href="{{ route('products.index') }}"
                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('products.*') ? 'bg-primary text-white' : '' }}">
                     <i class="fas fa-box mr-3"></i>
