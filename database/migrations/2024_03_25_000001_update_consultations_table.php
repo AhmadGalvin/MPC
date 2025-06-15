@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('consultations', function (Blueprint $table) {
+            $table->string('status')->after('owner_id')->default('pending');
             $table->date('scheduled_date')->after('status')->nullable();
             $table->time('scheduled_time')->after('scheduled_date')->nullable();
             $table->decimal('fee', 10, 2)->nullable()->after('scheduled_time');

@@ -46,16 +46,6 @@
                     <i class="fas fa-comments mr-3"></i>
                     Consultations
                 </a>
-                <a href="{{ route('doctor.prescriptions.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('doctor.prescriptions.*') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-prescription mr-3"></i>
-                    Prescriptions
-                </a>
-                <a href="{{ route('doctor.schedule') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('doctor.schedule') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-clock mr-3"></i>
-                    My Schedule
-                </a>
             </nav>
         </div>
 

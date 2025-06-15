@@ -7,14 +7,29 @@ use App\Models\Appointment;
 use App\Models\MedicalRecord;
 use App\Models\Pet;
 use App\Models\Prescription;
+use App\Models\Consultation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Doctor;
+
 
 class DashboardController extends Controller
 {
+    /**
+     * Get total consultations for a doctor based on doctor's ID from doctors table
+     */
+    private function getTotalConsultations(Doctor $doctor)
+    {
+        return Consultation::where('doctor_id', $doctor->id)
+            ->where('status', 'confirmed')
+            ->count();
+    }
+
     public function index()
     {
         $doctor = auth()->user();
+        // Get the doctor record from doctors table
+        $doctorModel = Doctor::where('user_id', $doctor->id)->first();
         $today = Carbon::today();
 
         // Get today's appointments
@@ -29,6 +44,9 @@ class DashboardController extends Controller
 
         // Get total medical records
         $totalMedicalRecords = MedicalRecord::where('doctor_id', $doctor->id)->count();
+
+        // Get total consultations with confirmed status using the new function
+        $totalConsultations = $this->getTotalConsultations($doctorModel);
 
         // Get total prescriptions
         $totalPrescriptions = Prescription::where('doctor_id', $doctor->id)->count();
@@ -64,6 +82,7 @@ class DashboardController extends Controller
             'todayAppointments' => $todayAppointments,
             'totalPatients' => $totalPatients,
             'totalMedicalRecords' => $totalMedicalRecords,
+            'totalConsultations' => $totalConsultations,
             'totalPrescriptions' => $totalPrescriptions,
             'upcomingAppointments' => $upcomingAppointments,
             'recentMedicalRecords' => $recentMedicalRecords

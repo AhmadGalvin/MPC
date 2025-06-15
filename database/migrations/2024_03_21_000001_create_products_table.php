@@ -18,7 +18,6 @@ return new class extends Migration
             $table->decimal('discount', 5, 2)->default(0);
             $table->string('category');
             $table->string('image')->nullable();
-            $table->foreignId('clinic_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

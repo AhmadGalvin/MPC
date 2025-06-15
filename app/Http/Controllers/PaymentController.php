@@ -58,7 +58,7 @@ class PaymentController extends Controller
             'paid_at' => now()
         ]);
 
-        return redirect()->route('owner.consultations.choose-doctors')
+        return redirect()->route('owner.consultations.choose-doctor')
             ->with('success', 'Payment successful! You can now start chatting with the doctor.');
     }
 

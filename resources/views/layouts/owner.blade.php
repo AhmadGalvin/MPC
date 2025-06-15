@@ -14,6 +14,7 @@
         .bg-primary { background-color: #4F46E5; }
         .hover\:bg-primary:hover { background-color: #4F46E5; }
         .border-primary { border-color: #4F46E5; }
+        .hover\:bg-primary-dark:hover { background-color: #4338CA; }
     </style>
     @stack('styles')
 </head>

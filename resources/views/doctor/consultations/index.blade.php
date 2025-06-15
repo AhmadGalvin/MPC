@@ -64,10 +64,6 @@
                                             <i class="fas fa-comments mr-1"></i> Chat
                                         </a>
                                     @endif
-                                    <a href="{{ route('doctor.consultations.show', $consultation) }}" 
-                                       class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
-                                        <i class="fas fa-eye mr-1"></i> Details
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -86,4 +82,4 @@
     </div>
 </div>
 @endsection 
-@endsection 
+ 

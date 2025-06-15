@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ChatMessage extends Model
@@ -18,6 +19,7 @@ class ChatMessage extends Model
     protected $fillable = [
         'consultation_id',
         'sender_id',
+        'sender_type',
         'message',
         'is_read'
     ];
@@ -34,18 +36,18 @@ class ChatMessage extends Model
     ];
 
     /**
+     * Get the parent sender model (User or Doctor).
+     */
+    public function sender(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    /**
      * Get the consultation that owns the message.
      */
     public function consultation(): BelongsTo
     {
         return $this->belongsTo(Consultation::class);
-    }
-
-    /**
-     * Get the sender of the message.
-     */
-    public function sender(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'sender_id');
     }
 } 

@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class User extends Authenticatable
 {
@@ -156,5 +157,21 @@ class User extends Authenticatable
     public function ownerAppointments()
     {
         return $this->hasMany(Appointment::class, 'owner_id');
+    }
+
+    /**
+     * Get all chat messages sent by this user.
+     */
+    public function chatMessages(): MorphMany
+    {
+        return $this->morphMany(ChatMessage::class, 'sender');
+    }
+
+    /**
+     * Get all consultations owned by this user.
+     */
+    public function consultations(): HasMany
+    {
+        return $this->hasMany(Consultation::class, 'owner_id');
     }
 }

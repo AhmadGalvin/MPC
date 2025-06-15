@@ -19,6 +19,7 @@ use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
 use App\Http\Controllers\Owner\AppointmentController as OwnerAppointmentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/consultations/{consultation}/chat', [App\Http\Controllers\Doctor\ChatController::class, 'show'])->name('chat.show');
         Route::get('/consultations/{consultation}/messages', [App\Http\Controllers\Doctor\ChatController::class, 'getMessages'])->name('chat.messages');
         Route::post('/consultations/{consultation}/messages', [App\Http\Controllers\Doctor\ChatController::class, 'storeMessage'])->name('chat.store');
+    });
+
+    // Chat Routes - Consolidated for polymorphic relationships
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/consultations/{consultation}', [ChatController::class, 'show'])->name('show');
+        Route::get('/consultations/{consultation}/messages', [ChatController::class, 'getMessages'])->name('messages.index');
+        Route::post('/consultations/{consultation}/messages', [ChatController::class, 'sendMessage'])->name('messages.store');
+        Route::post('/consultations/{consultation}/messages/read', [ChatController::class, 'markAsRead'])->name('messages.read');
     });
 });
 

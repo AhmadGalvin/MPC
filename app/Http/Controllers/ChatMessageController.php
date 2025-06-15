@@ -35,7 +35,8 @@ class ChatMessageController extends Controller
 
             $message = ChatMessage::create([
                 'consultation_id' => $consultation->id,
-                'sender_id' => $user->id,
+                'sender_id' => auth()->id(),
+                'sender_type' => get_class(auth()->user()),
                 'message' => $validated['message']
             ]);
 

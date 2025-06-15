@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ClinicController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/consultations/{consultation}/messages', [ConsultationController::class, 'sendMessage'])->name('consultations.messages.store');
         Route::get('/consultations/{consultation}/messages', [ConsultationController::class, 'getMessages'])->name('consultations.messages.index');
     });
+
+    // Chat routes
+    Route::get('/consultations/{consultation}/messages', [ChatController::class, 'getMessages']);
+    Route::post('/consultations/{consultation}/messages', [ChatController::class, 'sendMessage']);
+    Route::post('/consultations/{consultation}/messages/read', [ChatController::class, 'markAsRead']);
 });
 
 // Admin Routes
