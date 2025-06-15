@@ -20,6 +20,7 @@ class Doctor extends Model
         'user_id',
         'specialization',
         'sip_number',
+        'schedule',
         'consultation_fee',
         'is_available_for_consultation'
     ];

@@ -20,6 +20,9 @@ use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
 use App\Http\Controllers\Owner\AppointmentController as OwnerAppointmentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Admin\PetOwnerController;
+use App\Http\Controllers\Admin\PetController as AdminPetController;
+use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,48 +125,53 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::middleware(['auth', 'role:clinic_admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/activities', [AdminController::class, 'activities'])->name('activities');
+Route::middleware(['auth', 'role:clinic_admin'])->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
+        // Dashboard
+        Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Doctors Management
+        Route::get('/doctors', [App\Http\Controllers\Admin\DoctorController::class, 'index'])->name('doctors.index');
+        Route::get('/doctors/create', [App\Http\Controllers\Admin\DoctorController::class, 'create'])->name('doctors.create');
+        Route::post('/doctors/create-step-one', [App\Http\Controllers\Admin\DoctorController::class, 'storeStepOne'])->name('doctors.store.step.one');
+        Route::get('/doctors/create-step-two/{user}', [App\Http\Controllers\Admin\DoctorController::class, 'createStepTwo'])->name('doctors.create.step.two');
+        Route::post('/doctors/{user}', [App\Http\Controllers\Admin\DoctorController::class, 'store'])->name('doctors.store');
+        Route::get('/doctors/{doctor}', [App\Http\Controllers\Admin\DoctorController::class, 'show'])->name('doctors.show');
+        Route::get('/doctors/{doctor}/edit', [App\Http\Controllers\Admin\DoctorController::class, 'edit'])->name('doctors.edit');
+        Route::put('/doctors/{doctor}', [App\Http\Controllers\Admin\DoctorController::class, 'update'])->name('doctors.update');
+        Route::delete('/doctors/{doctor}', [App\Http\Controllers\Admin\DoctorController::class, 'destroy'])->name('doctors.destroy');
 
-    // Clinic Profile
-    Route::get('/clinic/profile', [ClinicController::class, 'profile'])->name('clinic.profile');
-    Route::put('/clinic/profile', [ClinicController::class, 'update'])->name('clinic.update');
-    Route::get('/clinic/history', [ClinicController::class, 'history'])->name('clinic.history');
+        // Pet Owners Management
+        Route::get('/owners', [PetOwnerController::class, 'index'])->name('owners.index');
+        Route::get('/owners/create-step-one', [PetOwnerController::class, 'createStepOne'])->name('owners.create-step-one');
+        Route::post('/owners/store-step-one', [PetOwnerController::class, 'storeStepOne'])->name('owners.store-step-one');
+        Route::get('/owners/{owner}/create-step-two', [PetOwnerController::class, 'createStepTwo'])->name('owners.create-step-two');
+        Route::post('/owners/{owner}', [PetOwnerController::class, 'store'])->name('owners.store');
+        Route::get('/owners/{owner}', [PetOwnerController::class, 'show'])->name('owners.show');
+        Route::get('/owners/{owner}/edit', [PetOwnerController::class, 'edit'])->name('owners.edit');
+        Route::put('/owners/{owner}', [PetOwnerController::class, 'update'])->name('owners.update');
+        Route::delete('/owners/{owner}', [PetOwnerController::class, 'destroy'])->name('owners.destroy');
 
-    // Doctors Management
-    Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
-    Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
-    Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
-    Route::put('/doctors/{doctor}', [DoctorController::class, 'update'])->name('doctors.update');
-    Route::delete('/doctors/{doctor}', [DoctorController::class, 'destroy'])->name('doctors.destroy');
-    Route::post('/doctors/{doctor}/reset-password', [DoctorController::class, 'resetPassword'])->name('doctors.reset-password');
+        // Pets
+        Route::resource('pets', AdminPetController::class);
 
-    // Schedule Management
-    Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
-    Route::get('/schedules/events', [ScheduleController::class, 'events'])->name('schedules.events');
-    Route::get('/schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show');
-    Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
-    Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
-    Route::put('/schedules/{schedule}/update-date', [ScheduleController::class, 'updateDate'])->name('schedules.update-date');
-    Route::put('/schedules/{schedule}/update-time', [ScheduleController::class, 'updateTime'])->name('schedules.update-time');
-    Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
+        // Consultations Management
+        Route::get('/consultations', [App\Http\Controllers\Admin\ConsultationController::class, 'index'])->name('consultations.index');
+        Route::get('/consultations/{consultation}', [App\Http\Controllers\Admin\ConsultationController::class, 'show'])->name('consultations.show');
+        
+        // Medical Records Management
+        Route::resource('medical-records', MedicalRecordController::class);
+        
+        // Appointments Management
+        Route::resource('appointments', AdminAppointmentController::class);
+        Route::patch('/appointments/{appointment}/confirm', [AdminAppointmentController::class, 'confirm'])->name('appointments.confirm');
+        Route::patch('/appointments/{appointment}/complete', [AdminAppointmentController::class, 'complete'])->name('appointments.complete');
+        Route::patch('/appointments/{appointment}/cancel', [AdminAppointmentController::class, 'cancel'])->name('appointments.cancel');
 
-    // Medical Records
-    Route::get('/medical-records', [MedicalRecordController::class, 'index'])->name('medical-records.index');
-    Route::get('/medical-records/{record}', [MedicalRecordController::class, 'show'])->name('medical-records.show');
-
-    // Consultations
-    Route::get('/consultations', [ConsultationController::class, 'index'])->name('consultations.index');
-    Route::get('/consultations/{consultation}', [ConsultationController::class, 'show'])->name('consultations.show');
-
-    // Products Management
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        // Settings
+        Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    });
 });
 
 // Payment Routes

@@ -1,142 +1,109 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
-@section('header', 'Dashboard')
+@section('header', 'Dashboard Overview')
 
 @section('content')
-<div class="py-6">
-    <!-- Quick Actions -->
-    <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="{{ route('admin.doctors.index') }}" class="block p-6 bg-blue-50 rounded-lg hover:bg-blue-100">
-                <div class="flex items-center">
-                    <div class="p-3 bg-blue-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold">Manage Doctors</h3>
-                        <p class="text-sm text-gray-600">Add or manage clinic doctors</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ route('admin.products.index') }}" class="block p-6 bg-green-50 rounded-lg hover:bg-green-100">
-                <div class="flex items-center">
-                    <div class="p-3 bg-green-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold">Manage Products</h3>
-                        <p class="text-sm text-gray-600">Manage inventory and prices</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ route('admin.schedules.index') }}" class="block p-6 bg-purple-50 rounded-lg hover:bg-purple-100">
-                <div class="flex items-center">
-                    <div class="p-3 bg-purple-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold">Schedules</h3>
-                        <p class="text-sm text-gray-600">Manage doctor schedules</p>
-                    </div>
-                </div>
-            </a>
+    <!-- Statistics Overview -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-title">Total Doctors</div>
+            <div class="stat-card-value">{{ $totalDoctors }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-title">Total Pet Owners</div>
+            <div class="stat-card-value">{{ $totalOwners }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-title">Total Pets</div>
+            <div class="stat-card-value">{{ $totalPets }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-card-title">Today's Consultations</div>
+            <div class="stat-card-value">{{ $todayConsultations }}</div>
         </div>
     </div>
 
-    <!-- Statistics -->
-    <div class="mb-8">
-        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="bg-white p-6 rounded-lg shadow border">
-                <div class="flex items-center">
-                    <div class="p-3 bg-blue-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
+    <div class="card">
+        <div class="card-title">Recent Activities</div>
+        @if(count($recentActivities) > 0)
+            <div style="max-height: 400px; overflow-y: auto;">
+                @foreach($recentActivities as $activity)
+                    <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                        <p style="margin: 0;">{{ $activity['description'] }}</p>
+                        <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: #6b7280;">
+                            {{ $activity['created_at'] }}
+                            <span class="badge" style="
+                                padding: 0.25rem 0.5rem;
+                                border-radius: 9999px;
+                                font-size: 0.75rem;
+                                margin-left: 0.5rem;
+                                background-color: {{ $activity['status'] === 'completed' ? '#def7ec' : '#fef3c7' }};
+                                color: {{ $activity['status'] === 'completed' ? '#03543f' : '#92400e' }};">
+                                {{ ucfirst($activity['status']) }}
+                            </span>
+                        </p>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Total Doctors</p>
-                        <p class="text-2xl font-semibold">{{ $doctors->count() }}</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
-
-            <div class="bg-white p-6 rounded-lg shadow border">
-                <div class="flex items-center">
-                    <div class="p-3 bg-green-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Total Products</p>
-                        <p class="text-2xl font-semibold">{{ $products->count() }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow border">
-                <div class="flex items-center">
-                    <div class="p-3 bg-yellow-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Pending Consultations</p>
-                        <p class="text-2xl font-semibold">{{ $pendingConsultations }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow border">
-                <div class="flex items-center">
-                    <div class="p-3 bg-purple-100 rounded-full mr-4">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Completed Today</p>
-                        <p class="text-2xl font-semibold">{{ $completedToday }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @else
+            <p style="text-align: center; color: #6b7280; padding: 1rem;">No recent activities</p>
+        @endif
     </div>
 
-    <!-- Recent Activities -->
-    <div>
-        <h2 class="text-lg font-semibold mb-4">Recent Activities</h2>
-        <div class="bg-white rounded-lg shadow border">
-            <div class="divide-y">
-                @forelse($recentActivities as $activity)
-                    <div class="p-4">
-                        <div class="flex items-center">
-                            <div class="mr-4">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">{{ $activity->description }}</p>
-                                <p class="text-xs text-gray-500">{{ $activity->created_at->diffForHumans() }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="p-4 text-gray-500 text-center">No recent activities</div>
-                @endforelse
-            </div>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div class="card-title" style="margin: 0;">Latest Consultations</div>
+            <a href="{{ route('admin.consultations.index') }}" class="btn btn-primary">View All</a>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Pet Owner</th>
+                        <th>Pet</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($latestConsultations as $consultation)
+                        <tr>
+                            <td>Dr. {{ $consultation->doctor->user->name }}</td>
+                            <td>{{ $consultation->pet->owner->name }}</td>
+                            <td>{{ $consultation->pet->name }}</td>
+                            <td>
+                                <span class="badge" style="
+                                    padding: 0.25rem 0.5rem;
+                                    border-radius: 9999px;
+                                    font-size: 0.75rem;
+                                    background-color: {{ $consultation->status === 'completed' ? '#def7ec' : '#fef3c7' }};
+                                    color: {{ $consultation->status === 'completed' ? '#03543f' : '#92400e' }};">
+                                    {{ ucfirst($consultation->status) }}
+                                </span>
+                            </td>
+                            <td>{{ $consultation->created_at->format('d M Y H:i') }}</td>
+                            <td>
+                                <a href="{{ route('admin.consultations.show', $consultation) }}" 
+                                   class="btn btn-primary" 
+                                   style="font-size: 0.875rem; padding: 0.375rem 0.75rem;">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6b7280;">No consultations found</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
 @endsection 
