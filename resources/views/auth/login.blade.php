@@ -31,11 +31,6 @@
                     <input type="checkbox" name="remember" id="remember" class="mr-2">
                     <label for="remember" class="text-sm text-gray-700">Remember me</label>
                 </div>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800">
-                        Forgot your password?
-                    </a>
-                @endif
             </div>
 
             <div class="flex flex-col space-y-4">

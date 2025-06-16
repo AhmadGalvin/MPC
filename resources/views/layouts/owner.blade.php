@@ -42,10 +42,10 @@
                     <i class="fas fa-calendar-alt mr-3"></i>
                     Appointments
                 </a>
-                <a href="{{ route('products.index') }}"
-                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('products.*') ? 'bg-primary text-white' : '' }}">
-                    <i class="fas fa-box mr-3"></i>
-                    Shop Products
+                <a href="{{ route('owner.chatbot.index') }}"
+                   class="flex items-center px-6 py-3 text-gray-700 hover:bg-primary hover:text-white transition-colors {{ request()->routeIs('owner.chatbot.*') ? 'bg-primary text-white' : '' }}">
+                    <i class="fas fa-robot mr-3"></i>
+                    AI Chatbot
                 </a>
             </nav>
         </div>

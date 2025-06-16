@@ -227,16 +227,12 @@
                 <i class="fas fa-calendar-check"></i>
                 Appointments
             </a>
-            <a href="{{ route('admin.consultations.index') }}" 
-               class="nav-link {{ request()->routeIs('admin.consultations.*') ? 'active' : '' }}">
-                <i class="fas fa-stethoscope"></i>
-                Consultations
+            <a href="{{ route('admin.financial.index') }}" 
+               class="nav-link {{ request()->routeIs('admin.financial.*') ? 'active' : '' }}">
+                <i class="fas fa-money-bill-wave"></i>
+                Financial
             </a>
-            <a href="{{ route('admin.settings.index') }}" 
-               class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                <i class="fas fa-cog"></i>
-                Settings
-            </a>
+
         </nav>
     </div>
 

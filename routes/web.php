@@ -23,6 +23,9 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Admin\PetOwnerController;
 use App\Http\Controllers\Admin\PetController as AdminPetController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
+use App\Http\Controllers\Admin\FinancialController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Owner\AIChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +39,10 @@ use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentControll
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        return redirect('/dashboard');
+    }
+    return redirect('/login');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -49,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
         // Pet Routes
         Route::resource('pets', App\Http\Controllers\Owner\PetController::class);
         Route::post('pets/{pet}/photo', [App\Http\Controllers\Owner\PetController::class, 'uploadPhoto'])->name('pets.upload-photo');
+        
+        // AI Chatbot Routes
+        Route::get('/chatbot', [App\Http\Controllers\Owner\AIChatbotController::class, 'index'])->name('chatbot.index');
+        Route::post('/chatbot/chat', [App\Http\Controllers\Owner\AIChatbotController::class, 'chat'])->name('chatbot.chat');
         
         // Appointment Routes
         Route::resource('appointments', App\Http\Controllers\Owner\AppointmentController::class);
@@ -171,6 +181,10 @@ Route::middleware(['auth', 'role:clinic_admin'])->group(function () {
         // Settings
         Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+        // Financial Management
+        Route::get('/financial', [FinancialController::class, 'index'])->name('financial.index');
+        Route::resource('settings', SettingController::class);
     });
 });
 
