@@ -7,9 +7,10 @@
     <div class="card-title">Chat with AI Assistant</div>
     <div class="chat-container" style="height: 500px; display: flex; flex-direction: column;">
         <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 1rem; background-color: #f8fafc; border-radius: 0.5rem; margin-bottom: 1rem;">
-            <div class="message system" style="margin-bottom: 1rem; padding: 1rem; background-color: #e8f5e9; border-radius: 0.5rem;">
-                <p style="margin: 0; color: #1b5e20;">
-                    Hello! I'm your AI Pet Care Assistant. I can help you with general questions about pet care, behavior, and wellness. 
+            <div class="message system" style="margin-bottom: 1rem; padding: 1rem; background-color: #e8f5e9; border-radius: 0.5rem; width: 100%; text-align: center;">
+                <p style="margin: 0; color: #1b5e20; font-size: 0.9rem;">
+                    Hello! I'm your AI Pet Care Assistant. I can help you with general questions about pet care, behavior, and wellness.
+                    <br>
                     Remember, while I can provide general advice, please consult a veterinarian for specific medical concerns.
                 </p>
             </div>
@@ -20,19 +21,19 @@
             </div>
             @endif
         </div>
-        
+
         <form id="chat-form" class="chat-input" style="display: flex; gap: 1rem;">
             @csrf
-            <input type="text" 
-                   id="user-input" 
+            <input type="text"
+                   id="user-input"
                    name="message"
-                   style="flex: 1; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; font-size: 1rem;" 
+                   style="flex: 1; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; font-size: 1rem;"
                    placeholder="Type your message here..."
                    required>
-            <button type="submit" 
-                    id="send-button" 
+            <button type="submit"
+                    id="send-button"
                     style="padding: 0.75rem 1.5rem; background-color: #1a56db; color: white; border: none; border-radius: 0.375rem; font-weight: 500; cursor: pointer;">
-                Send
+                <i class="fas fa-paper-plane"></i> Send
             </button>
         </form>
     </div>
@@ -41,28 +42,39 @@
 
 @section('styles')
 <style>
+    /* Base style untuk semua bubble chat */
     .message {
         margin-bottom: 1rem;
-        padding: 1rem;
-        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
         max-width: 80%;
+        line-height: 1.5;
     }
 
+    /* Gaya untuk pesan Pengguna (Owner) - Rata Kanan */
     .message.user {
+        background-color: #dbeafe; /* Warna biru muda */
+        color: #1e3a8a;
+        margin-left: auto; /* Mendorong bubble ke kanan */
+        border-bottom-right-radius: 0.25rem; /* Memberi efek "ekor" seperti di WhatsApp */
+    }
+
+    /* Gaya untuk pesan AI Chatbot - Rata Kiri */
+    .message.ai {
+        background-color: #f3f4f6; /* Warna abu-abu muda */
+        color: #374151;
+        margin-right: auto; /* Mendorong bubble ke kiri */
+        border-bottom-left-radius: 0.25rem; /* Memberi efek "ekor" seperti di WhatsApp */
+    }
+
+    /* Gaya untuk pesan Sistem (info awal) */
+    .message.system {
         background-color: #e8f5e9;
         color: #1b5e20;
-        margin-left: auto;
-    }
-
-    .message.ai {
-        background-color: #f3f4f6;
-        color: #374151;
-        margin-right: auto;
     }
 
     .message p {
         margin: 0;
-        line-height: 1.5;
     }
 
     .markdown-content {
@@ -97,11 +109,14 @@
 
     .typing-indicator {
         display: flex;
-        padding: 1rem;
+        align-items: center;
+        padding: 0.75rem 1rem;
         background-color: #f3f4f6;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         margin-bottom: 1rem;
         width: fit-content;
+        margin-right: auto;
+        border-bottom-left-radius: 0.25rem;
     }
 
     .typing-indicator span {
@@ -128,7 +143,7 @@
 </style>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -148,16 +163,19 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(content, type) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}`;
-        
+
         if (type === 'ai') {
             messageDiv.innerHTML = `
                 <strong>AI Response:</strong>
-                <div class="markdown-content">${marked(content)}</div>
+                <div class="markdown-content">${marked.parse(content)}</div>
             `;
         } else {
-            messageDiv.innerHTML = `<p>${content}</p>`;
+            // Cara yang lebih aman untuk menambahkan teks pengguna
+            const p = document.createElement('p');
+            p.textContent = content;
+            messageDiv.appendChild(p);
         }
-        
+
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -227,8 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Convert any existing markdown content
     document.querySelectorAll('.markdown-content').forEach(element => {
         const content = element.textContent;
-        element.innerHTML = marked(content);
+        element.innerHTML = marked.parse(content);
     });
 });
 </script>
-@endsection 
+@endpush

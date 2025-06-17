@@ -1,13 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ConsultationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\ClinicController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\MedicalRecordController;
@@ -15,7 +12,6 @@ use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController
 use App\Http\Controllers\Doctor\AppointmentController;
 use App\Http\Controllers\Doctor\PatientController;
 use App\Http\Controllers\Doctor\MedicalRecordController as DoctorMedicalRecordController;
-use App\Http\Controllers\Doctor\PrescriptionController;
 use App\Http\Controllers\Doctor\ScheduleController as DoctorScheduleController;
 use App\Http\Controllers\Owner\AppointmentController as OwnerAppointmentController;
 use App\Http\Controllers\PaymentController;
@@ -24,7 +20,6 @@ use App\Http\Controllers\Admin\PetOwnerController;
 use App\Http\Controllers\Admin\PetController as AdminPetController;
 use App\Http\Controllers\Admin\AppointmentController as AdminAppointmentController;
 use App\Http\Controllers\Admin\FinancialController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Owner\AIChatbotController;
 
 /*
@@ -84,12 +79,6 @@ Route::middleware(['auth'])->group(function () {
         })->name('payments.processing');
     });
 
-    // Product routes
-    Route::resource('products', ProductController::class)->only(['index', 'show']);
-    Route::middleware(['role:clinic_admin'])->group(function () {
-        Route::resource('products', ProductController::class)->except(['index', 'show']);
-    });
-
     // Doctor Routes
     Route::middleware(['auth', 'role:doctor'])->name('doctor.')->prefix('doctor')->group(function () {
         Route::get('/', [App\Http\Controllers\Doctor\DashboardController::class, 'index'])->name('dashboard');
@@ -105,7 +94,6 @@ Route::middleware(['auth'])->group(function () {
         
         Route::resource('patients', PatientController::class);
         Route::resource('medical-records', DoctorMedicalRecordController::class);
-        Route::resource('prescriptions', PrescriptionController::class);
         Route::get('/schedule', [DoctorScheduleController::class, 'index'])->name('schedule');
         
         // Consultations
@@ -126,12 +114,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/consultations/{consultation}/messages', [ChatController::class, 'sendMessage'])->name('messages.store');
         Route::post('/consultations/{consultation}/messages/read', [ChatController::class, 'markAsRead'])->name('messages.read');
     });
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Admin Routes
@@ -164,10 +146,6 @@ Route::middleware(['auth', 'role:clinic_admin'])->group(function () {
 
         // Pets
         Route::resource('pets', AdminPetController::class);
-
-        // Consultations Management
-        Route::get('/consultations', [App\Http\Controllers\Admin\ConsultationController::class, 'index'])->name('consultations.index');
-        Route::get('/consultations/{consultation}', [App\Http\Controllers\Admin\ConsultationController::class, 'show'])->name('consultations.show');
         
         // Medical Records Management
         Route::resource('medical-records', MedicalRecordController::class);
@@ -178,13 +156,8 @@ Route::middleware(['auth', 'role:clinic_admin'])->group(function () {
         Route::patch('/appointments/{appointment}/complete', [AdminAppointmentController::class, 'complete'])->name('appointments.complete');
         Route::patch('/appointments/{appointment}/cancel', [AdminAppointmentController::class, 'cancel'])->name('appointments.cancel');
 
-        // Settings
-        Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
-        Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
-
         // Financial Management
         Route::get('/financial', [FinancialController::class, 'index'])->name('financial.index');
-        Route::resource('settings', SettingController::class);
     });
 });
 

@@ -3,16 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PetController;
+use App\Http\Controllers\Owner\PetController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\MedicalRecordController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ClinicController;
 use App\Http\Controllers\Admin\DoctorController as AdminDoctorController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\ChatController;
 
@@ -30,10 +28,6 @@ use App\Http\Controllers\ChatController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register'])->name('api.auth.register');
 Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
-
-// Public product routes
-Route::get('/products', [ProductController::class, 'index'])->name('api.products.index');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('api.products.show');
 
 // Protected routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -56,14 +50,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('doctors', DoctorController::class);
     });
 
-    // Shared routes
-    Route::name('api.')->group(function () {
-        Route::apiResource('products', ProductController::class)->only(['index', 'show']);
-        Route::middleware(['role:clinic_admin'])->group(function () {
-            Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-        });
-    });
-
     // Consultation routes (Owner & Doctor)
     Route::middleware(['role:owner,doctor'])->name('api.')->group(function () {
         Route::apiResource('consultations', ConsultationController::class);
@@ -81,19 +67,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum', 'role:clinic_admin'])->prefix('clinic-admin')->name('api.clinic_admin.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Clinic Profile
-    Route::get('/clinic', [AdminController::class, 'getClinicProfile'])->name('clinic.profile');
-    Route::put('/clinic', [ClinicController::class, 'update'])->name('clinic.update');
-    Route::get('/clinic/statistics', [ClinicController::class, 'statistics'])->name('clinic.statistics');
+
     
     // Doctor Management
     Route::apiResource('doctors', AdminDoctorController::class);
     
     // Schedule Management
     Route::apiResource('schedules', ScheduleController::class);
-    
-    // Product Management
-    Route::apiResource('products', AdminProductController::class);
-    Route::patch('/products/{product}/stock', [AdminProductController::class, 'updateStock'])->name('products.update-stock');
 });
